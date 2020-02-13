@@ -1,4 +1,4 @@
-const args = process.argv.slice(2) || []
+const args = process.argv.length > 2 && process.argv.slice(2) || []
 const workingDir = args.length && args[0] || './'
 const exec = require('child_process').exec;
 const chalk = require('chalk');
@@ -9,6 +9,12 @@ const git = require('simple-git/promise')
 
 clear()
 console.log(chalk.yellow(figlet.textSync('Releaser', { horizontalLayout: 'full' })))
+const checkArgs = () => {
+  if(process.argv.length === 2) {
+    console.error(chalk.red.bold(`❯ 💣 Failed because you must provide a <path> to the repository as argument`))
+    process.exit(1)
+  }
+}
 
 const execPromise = cmd => {
   return new Promise((resolve, reject) => 
@@ -133,6 +139,7 @@ const sumVersioningChanges = (lastVersionArray, type) => {
 
 const main = async () => {
   try {
+    checkArgs()
     await stash()
     const confirmUpdateRepoInfo = await confirmUpdateRepo()
     if (confirmUpdateRepoInfo) {
