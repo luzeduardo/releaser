@@ -10,5 +10,11 @@
     "figlet": "^1.2.4",
     "inquirer": "^7.0.4",
     "simple-git": "^1.131.0"
+  },
+  "devDependencies": {
+    "jest": "^25.1.0"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
