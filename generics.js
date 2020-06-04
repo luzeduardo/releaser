@@ -30,8 +30,13 @@ const sumVersioningChanges = (lastVersionArray, type) => {
   return mountSummedVersionString(newVersionArray)
 }
 
+const readTemplate = async (template) => {
+  return await fs.readFile(template)
+}
+
 module.exports = {
   mountSummedVersionString,
   getVersionNumberParsed,
-  sumVersioningChanges
+  sumVersioningChanges,
+  readTemplate
 }

@@ -5,8 +5,11 @@ const chalk = require('chalk');
 const clear = require('clear');
 const figlet = require('figlet');
 const inquirer = require('inquirer')
+const  remark = require('remark')
+const fs = require('fs')
+const strip = require('strip-markdown')
 const git = require('simple-git/promise')
-const { getVersionNumberParsed, sumVersioningChanges } = require('./generics')
+const { getVersionNumberParsed, sumVersioningChanges, readTemplate } = require('./generics')
 clear()
 console.log(chalk.yellow(figlet.textSync('Releaser', { horizontalLayout: 'full' })))
 const checkArgs = () => {
@@ -17,7 +20,7 @@ const checkArgs = () => {
 }
 
 const execPromise = cmd => {
-  return new Promise((resolve, reject) => 
+  return new Promise((resolve, reject) =>
     exec(cmd, (error, stdout, stderr) => {
      error && console.warn(error)
      resolve(stdout ? stdout : stderr)
@@ -42,7 +45,7 @@ const pull = async () => await gitX().raw(['pull', 'origin', 'HEAD'])
 const goToBranch = async branchName => await gitX().raw(['checkout', branchName])
 
 const changePackageJson = async version => {
-  const file = `${workingDir}/package.json` 
+  const file = `${workingDir}/package.json`
   const lineReplace = `'s/"version": "\\(.*\\)"/"version": "${version}"/g'`
   const osName = process.platform
   const cmd = osName === 'darwin' ? `sed -i '' ${lineReplace} ${file}` : `sed -i ${lineReplace} ${file}`
@@ -94,7 +97,7 @@ const confirmPushRelease = async () => await inquirer.prompt([{
   message: `Do you want to push the release to remote git now?`
 }]).then(next => next.pushReleaseConfirm)
 
-const confirmDevBranchName = async () => { 
+const confirmDevBranchName = async () => {
   const questionsDevBranch = [{
     name: 'type',
     message: `What is your development branch name for ${workingDir}?`,
@@ -103,6 +106,17 @@ const confirmDevBranchName = async () => {
     choices: ['dev', 'develop', 'development' ]
   }]
   return await inquirer.prompt(questionsDevBranch)
+}
+
+const printMailTemplate = (version, lastVersion) => {
+  const templateData = readTemplate('./templates/web_email.md')
+  let template = remark().use(strip).process(templateData, (err, file) => {
+    if (err) throw err
+    console.log(String(file))
+  })
+  template = template.replace(/#LAST_VERSION#/g, lastVersion)
+  template = template.replace(/#VERSION#/g, version)
+  return template
 }
 
 const main = async () => {
@@ -147,6 +161,8 @@ const main = async () => {
       await pushMaster()
       console.log('Uploading tags...')
       await pushTags()
+      console.log('Making email template...')
+      console.log(printMailTemplate(summedVersionInfo, lastReleaseInfo.lastVersion))
     }
     //access sites forcing new version
     //clean cached files
