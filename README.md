@@ -1,7 +1,7 @@
 # Releaser
 > Its is a simple tool to help deploy NodeJS projects that uses **gitflow**
 
-![](header.png)
+![](print.png)
 
 ## Installation
 

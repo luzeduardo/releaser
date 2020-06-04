@@ -1,7 +1,8 @@
+const fs = require('fs').promises
 const mountSummedVersionString = array => array.join('.')
 const getVersionNumberParsed = line => {
   const regexVersion = /(\d+).(\d+).(\d+)/
-  const version = regexVersion.exec(line);
+  const version = regexVersion.exec(line)
   return version && version.slice(1, 4) || new Error("Wrong value provided for version string check\n\n")
 }
 const sumVersioningChanges = (lastVersionArray, type) => {
@@ -30,8 +31,9 @@ const sumVersioningChanges = (lastVersionArray, type) => {
   return mountSummedVersionString(newVersionArray)
 }
 
-const readTemplate = async (template) => {
-  return await fs.readFile(template)
+const readTemplate = async template => {
+  const data = await fs.readFile(template, "utf8");
+  return String(Buffer.from(data))
 }
 
 module.exports = {

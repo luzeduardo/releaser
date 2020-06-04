@@ -1,7 +1,9 @@
 ### assunto
+
 [Player Web] Release #VERSION#
 
 ### to
+
 op.videos@g.globo, webmedia@g.globo
 
 ### conteúdo

@@ -5,9 +5,6 @@ const chalk = require('chalk');
 const clear = require('clear');
 const figlet = require('figlet');
 const inquirer = require('inquirer')
-const  remark = require('remark')
-const fs = require('fs')
-const strip = require('strip-markdown')
 const git = require('simple-git/promise')
 const { getVersionNumberParsed, sumVersioningChanges, readTemplate } = require('./generics')
 clear()
@@ -108,13 +105,9 @@ const confirmDevBranchName = async () => {
   return await inquirer.prompt(questionsDevBranch)
 }
 
-const printMailTemplate = (version, lastVersion) => {
-  const templateData = readTemplate('./templates/web_email.md')
-  let template = remark().use(strip).process(templateData, (err, file) => {
-    if (err) throw err
-    console.log(String(file))
-  })
-  template = template.replace(/#LAST_VERSION#/g, lastVersion)
+const printMailTemplate = async (version, lastVersion) => {
+  let template = await readTemplate('./templates/web_email.md')
+  template = template.replace(/#LAST_VERSION#/g, lastVersion.join('.'))
   template = template.replace(/#VERSION#/g, version)
   return template
 }
@@ -162,7 +155,7 @@ const main = async () => {
       console.log('Uploading tags...')
       await pushTags()
       console.log('Making email template...')
-      console.log(printMailTemplate(summedVersionInfo, lastReleaseInfo.lastVersion))
+      console.log(await printMailTemplate(summedVersionInfo, lastReleaseInfo.lastVersion))
     }
     //access sites forcing new version
     //clean cached files
