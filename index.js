@@ -32,7 +32,7 @@ const tagExists = async version => await gitX().raw(['tag', '-l', version])
 const pushMaster = async () => await gitX().raw(['push','origin','master'])
 const pushDev = async () => await gitX().raw(['push','origin','dev'])
 const pushTags = async () => await gitX().raw(['push','origin','--tags'])
-
+const flowSupport = async () => await gitX().raw(['flow','support'])
 const stash = async () => await gitX().raw(['stash'])
 const status = async () => await gitX().raw(['status'])
 const branch = async () => await gitX().raw(['branch'])
@@ -115,6 +115,7 @@ const printMailTemplate = async (version, lastVersion) => {
 const main = async () => {
   try {
     checkArgs()
+    await flowSupport()
     await stash()
     const confirmUpdateRepoInfo = await confirmUpdateRepo()
     if (confirmUpdateRepoInfo) {
