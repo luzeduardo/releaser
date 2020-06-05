@@ -13,11 +13,11 @@ yarn
 
 ## Usage example
 
-node index.js **absolute path of git repository]**
+node index **absolute path of git repository]**
 
 ### Example
 
-node index.js **/$USER/project-path**
+node index **/$USER/project-path**
 
 ## Development setup
 
