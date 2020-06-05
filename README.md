@@ -23,6 +23,14 @@ node index **/$USER/project-path**
 
 To do.
 
+Use a docker image to be used as your local github https://hub.docker.com/r/winlu/docker-git-server/ and point
+your origin or upstream at `.git/config` with:
+```sh
+[remote "origin"]
+url = ssh://localhost:1234/~/my_repo.git
+fetch = +refs/heads/*:refs/remotes/origin/*
+```
+
 ```sh
 yarn
 ```
