@@ -30,7 +30,7 @@ const releaseStart = async version => await gitX().raw(['flow','release','start'
 const releaseFinish = async version => await gitX().raw(['flow','release','finish', '-F', '-m', version, version])
 const tagExists = async version => await gitX().raw(['tag', '-l', version])
 const pushMaster = async () => await gitX().raw(['push','origin','master'])
-const pushDev = async () => await gitX().raw(['push','origin','dev'])
+const pushDev = async devBranchName => await gitX().raw(['push','origin', devBranchName])
 const pushTags = async () => await gitX().raw(['push','origin','--tags'])
 const flowSupport = async () => await gitX().raw(['flow','support'])
 const stash = async () => await gitX().raw(['stash'])
@@ -150,7 +150,7 @@ const main = async () => {
     !confirmPushReleaseInfo && console.warn(chalk.red.bold(`❯ 💣 You should then push the release manually with git push origin master && git push origin --tags`))
     if (confirmPushReleaseInfo) {
       console.log('Uploading dev...')
-      await pushDev()
+      await pushDev(branchName)
       console.log('Uploading master...')
       await pushMaster()
       console.log('Uploading tags...')
